@@ -7,11 +7,24 @@ import { dirname, resolve } from "path";
 import {
   addFromCache,
   getSrcDir,
+  initProject,
   logAndExit,
   scrapeAndAdd,
   toComponentName,
 } from "./utils/spfyUtils.js";
 
+const args: string[] = process.argv;
+if (args.length < 2) {
+  logAndExit(
+    "No arguments passed..\nuse: add provider:iconname\neg:npx spfyui add ri:github-line",
+  );
+  process.exit(1);
+}
+// /* //for now
+if (args.length > 4) {
+  logAndExit("Invalid args..\nspfyui --help");
+  process.exit(1);
+}
 // Get the directory of the current module
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -19,7 +32,15 @@ const ROOTDIR = resolve(__dirname, "..");
 const CACHE = resolve(ROOTDIR, ".cache");
 const srcdir = await getSrcDir(process.cwd());
 const spfyiconsPath = resolve(srcdir, "assets", "spfyicons", "index.ts");
-
+// */
+if (args.length === 3 && args[args.length - 1] === "init") {
+  await initProject(srcdir, spfyiconsPath);
+  process.exit(0);
+}
+if (args.length === 3 && args[args.length - 1] !== "init") {
+  logAndExit("Invalid argument..\nhint:spyfui init");
+  process.exit(1);
+}
 const installedIconsData: string = await readFile(spfyiconsPath, "utf8");
 const installedIcons: string[] = installedIconsData.split("const ");
 installedIcons.shift();
@@ -27,16 +48,7 @@ const installedIconsArr: string[] = installedIcons.reduce(
   (acc: string[], curr): string[] => (acc = [...acc, curr.split("=")[0]]),
   [],
 );
-console.log({ installedIconsArr });
-const args: string[] = process.argv;
 const validCmd: string[] = ["a", "add", "rm", "remove"];
-
-if (args.length <= 2 || args.length > 4) {
-  logAndExit(
-    "No arguments passed..\nuse: add provide:iconname\neg:npx spfyui add ri:github-line",
-  );
-  process.exit(0);
-}
 
 const [, , cmd, icon] = args;
 if (!validCmd.includes(cmd)) {

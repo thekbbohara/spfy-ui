@@ -1,8 +1,8 @@
 import { XMLParser } from "fast-xml-parser";
 import { appendFile, writeFile, readdir, mkdir } from "fs/promises";
 import { resolve } from "path";
-
-// Function to extract path data from SVG string
+import writeSetupFiles from "../lib/writeSetupFiles.js";
+import { execSync as exec } from "child_process";
 export const getSvgPathData = (svg: string): string | null => {
   const parser = new XMLParser({
     ignoreAttributes: false,
@@ -91,4 +91,58 @@ export const scrapeAndAdd = async (
   writeFile(filePath, JSON.stringify(newlocalIcons), "utf8");
   console.log("Icon added:", "<" + ComponentName, "/>");
   process.exit(0);
+};
+const ensureDirsExist = async (dirs: string[]): Promise<void> => {
+  dirs.forEach(async (dir) => {
+    await mkdir(resolve(dir), { recursive: true });
+  });
+};
+
+const getPackageManager = async (srcDir: string): Promise<string> => {
+  console.log(srcDir);
+  try {
+    const files = await readdir(srcDir);
+    console.log(files);
+    if (files.includes("bun.lockb")) return "bun";
+    if (files.includes("package-lock.json")) return "npm";
+    if (files.includes("yarn.lock")) return "yarn";
+    if (files.includes("pnpm-lock.yaml")) return "pnpm";
+    return "unknown"; // Return 'unknown' if no known lock files are found
+  } catch (error) {
+    console.error(`Failed to read directory '${srcDir}':`, error);
+    return "error"; // Return 'error' in case of failure to read directory
+  }
+};
+
+export const initProject = async (
+  srcdir: string,
+  spfyiconpath: string,
+): Promise<void> => {
+  console.log("initialing spfyui project..");
+  const pkgm: string = await getPackageManager(resolve(srcdir, ".."));
+  const commands: { [key: string]: string } = {
+    bun: "i",
+    pnpm: "add",
+    yarn: "add",
+    npm: "i",
+  };
+  const pkgmCommands = commands[pkgm];
+  if (pkgmCommands) {
+    console.log(`${pkgm} ${pkgmCommands} tailwind-merge -D`);
+    exec(`${pkgm} ${pkgmCommands} tailwind-merge -D`, {
+      cwd: resolve(srcdir, ".."),
+    });
+    console.log(`${pkgm} ${pkgmCommands} clsx -D`);
+    exec(`${pkgm} ${pkgmCommands} clsx -D`, {
+      cwd: resolve(srcdir, ".."),
+    });
+    const utilsdir = resolve(srcdir, "utils");
+    console.log("writing necessary utils..");
+    await ensureDirsExist([utilsdir, resolve(spfyiconpath, "..")]);
+    await writeSetupFiles(utilsdir, spfyiconpath);
+    process.exit(0);
+  } else {
+    console.error("Unable to detect package manager...");
+    process.exit(1);
+  }
 };
