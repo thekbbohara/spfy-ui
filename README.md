@@ -2,11 +2,51 @@
 
 ## Why spfyui ?
 
-- _SpfyUI was created to address a common issue faced by developers when integrating icons and UI components into React projects: the limitation of predefined icon sets and the bloat of installing multiple packages. Often, popular libraries like react-icons or remix-icons don't include all the icons or components you need. SpfyUI solves this problem by allowing you to dynamically add any icon or UI component from various providers on-demand. And just the thought of adding unnecessary stuff in mycodebase just turns me off._
+- _**SpfyUI** solves the *problem* of *limited icon sets* and *bloated packages* in React projects by letting you dynamically add icons or UI components from various providers as needed, avoiding unnecessary codebase clutter._
 - ### Key Benefits
   - Dynamic Integration
   - Reduced Bloat
   - Unified Interface
+
+## How to you the beta version ?
+
+- This project has not been fully completed but if you like to try or contribute, you can follow the following steps:
+  > Note I will be showing you how to do on linux, but it's pretty straight forward.
+  >
+  > -- 1. Clone the repo.
+
+```sh
+git clone https://github.com/thekbbohara/spfy-ui.git
+```
+
+-- 2. Change directory to spfyui.
+
+```sh
+cd spfyui
+```
+
+-- 3. Compile ts code to js.
+
+```sh
+tsc
+```
+
+-- 4. Create an alias to run the compiled code.
+
+```sh
+vim ~/.zshrc # your shell configuration file
+```
+
+And at the end of the file add alias `alias spfyui='node path/to/spfyui/dist/index.js'`
+
+---
+
+Hooray you are all set now you can create a react project and use spfyui.
+
+_Example:_
+-- `spfyui init` This sets up necessary utils files and path to icon dir inside src/assets
+-- you can download any svg icon from general category : [Icons/general](https://icon-sets.iconify.design/?category=General)
+-- `spfyui add ri:github-line`
 
 ## TODOs
 
