@@ -38,6 +38,7 @@ export const toComponentName = (name: string, provider: string): string => {
 // add chalk as well
 export const logAndExit = (msg: string): void => {
   console.log(msg);
+  process.exit(1);
 };
 export const appendIcon = async (
   spfyiconsdir: string,
@@ -88,7 +89,8 @@ export const scrapeAndAdd = async (
   }
   const newlocalIcons = { ...localIcons, [ComponentName]: d };
   await appendIcon(spfyiconsPath, ComponentName, d);
-  writeFile(filePath, JSON.stringify(newlocalIcons), "utf8");
+  console.log("adding icon to local cache..");
+  await writeFile(filePath, JSON.stringify(newlocalIcons), "utf8");
   console.log("Icon added:", "<" + ComponentName, "/>");
   process.exit(0);
 };
