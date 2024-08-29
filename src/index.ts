@@ -37,10 +37,7 @@ if (args.length === 3 && args[args.length - 1] === "init") {
   await initProject(srcdir, spfyiconsPath);
   process.exit(0);
 }
-if (args.length === 3 && args[args.length - 1] !== "init") {
-  logAndExit("Invalid argument..\nhint:spyfui init");
-  process.exit(1);
-}
+
 const installedIconsData: string = await readFile(spfyiconsPath, "utf8");
 const installedIcons: string[] = installedIconsData.split("const ");
 installedIcons.shift();
@@ -48,6 +45,18 @@ const installedIconsArr: string[] = installedIcons.reduce(
   (acc: string[], curr): string[] => (acc = [...acc, curr.split("=")[0]]),
   [],
 );
+if (args.length === 3 && args[args.length - 1] === "list") {
+  console.log({ installedIconsArr });
+  process.exit(0);
+}
+
+if (
+  (args.length === 3 && args[args.length - 1] !== "init") ||
+  args[args.length - 1] !== "list"
+) {
+  logAndExit("Invalid argument..\nhint:spyfui init");
+  process.exit(1);
+}
 const validCmd: string[] = ["a", "add", "rm", "remove"];
 
 const [, , cmd, icon] = args;
