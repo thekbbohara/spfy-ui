@@ -51,10 +51,11 @@ _Example:_
 ## TODOs
 
 - [x] Add `add` Feature: Implemented the functionality to add icons or components.
+- [ ] extend `add` Feature: Support to svg icons with multiple path data.
 - [x] Add `init` Command: Set up the initial project configuration.
 - [ ] Add `rm` Feature: Implement functionality to remove icons or components.
-- [ ] Add Listing Commands:
+- [x] Add Listing Commands:
   - [x] `list`: List all installed icons in the current project.
   - [x] `list <povider>`: List all installed icons by provider.
-  - [ ] `list -g`: List all installed icons globally.
+  - [x] `list -g`: List all installed icons globally.
 - [ ] Add Component Support: Extend functionality to support UI components
