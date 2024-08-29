@@ -1,5 +1,5 @@
 import { XMLParser } from "fast-xml-parser";
-import { appendFile, writeFile, readdir, mkdir } from "fs/promises";
+import { appendFile, writeFile, readdir, mkdir, readFile } from "fs/promises";
 import { resolve } from "path";
 import writeSetupFiles from "../lib/writeSetupFiles.js";
 import { execSync as exec } from "child_process";
@@ -147,4 +147,45 @@ export const initProject = async (
     console.error("Unable to detect package manager...");
     process.exit(1);
   }
+};
+export const getInstalledIconName = async (path: string): Promise<string[]> => {
+  const installedIconsData: string = await readFile(path, "utf8");
+  const installedIcons: string[] = installedIconsData.split("const ");
+  installedIcons.shift();
+  const installedIconsArr: string[] = installedIcons.reduce(
+    (acc: string[], curr): string[] => (acc = [...acc, curr.split("=")[0]]),
+    [],
+  );
+  return installedIconsArr;
+};
+type iconsData = { [key: string]: string };
+export const getIcons = async (path: string): Promise<iconsData> => {
+  let localIcons: iconsData = {};
+  try {
+    const filedata = await readFile(path, "utf8");
+    localIcons = JSON.parse(filedata);
+  } catch (err: any) {
+    await writeFile(path, "{}", "utf8");
+    localIcons = {};
+  }
+  return localIcons;
+};
+
+export const logAllIcons = async (CACHE: string): Promise<void> => {
+  const files = await readdir(CACHE);
+  const installedIconsG: { [key: string]: string[] }[] = [];
+  for (let i = 0; i < files.length; i++) {
+    const iconData: { [key: string]: string } = await JSON.parse(
+      await readFile(resolve(CACHE, files[i]), "utf8"),
+    );
+    const iconNames: string[] = Object.keys(iconData);
+    if (iconNames.length !== 0) {
+      let provider: string | string[] = files[i].split(".")[0];
+      provider = provider.split("/");
+      const providerName: string = provider[provider.length - 1];
+      installedIconsG.push({ [providerName]: iconNames });
+    }
+  }
+  console.log(installedIconsG);
+  process.exit(0);
 };
