@@ -55,6 +55,6 @@ _Example:_
 - [ ] Add `rm` Feature: Implement functionality to remove icons or components.
 - [ ] Add Listing Commands:
   - [x] `list`: List all installed icons in the current project.
-  - [ ] `list <povider>`: List all installed icons by provider.
+  - [x] `list <povider>`: List all installed icons by provider.
   - [ ] `list -g`: List all installed icons globally.
 - [ ] Add Component Support: Extend functionality to support UI components
