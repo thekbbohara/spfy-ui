@@ -14,6 +14,7 @@ import {
 } from "./utils/spfyUtils.js";
 
 const args: string[] = process.argv;
+// console.log(args);
 if (args.length < 2) {
   logAndExit(
     "No arguments passed..\nuse: add provider:iconname\neg:npx spfyui add ri:github-line",
@@ -33,6 +34,11 @@ const CACHE = resolve(ROOTDIR, ".cache");
 const srcdir = await getSrcDir(process.cwd());
 const spfyiconsPath = resolve(srcdir, "assets", "spfyicons", "index.ts");
 // */
+const validCmd: string[] = ["init", "list"];
+if (args.length === 3 && !validCmd.includes(args[args.length - 1])) {
+  logAndExit("Invalid argument..\nhint:spyfui init");
+  process.exit(1);
+}
 if (args.length === 3 && args[args.length - 1] === "init") {
   await initProject(srcdir, spfyiconsPath);
   process.exit(0);
@@ -46,18 +52,11 @@ const installedIconsArr: string[] = installedIcons.reduce(
   [],
 );
 if (args.length === 3 && args[args.length - 1] === "list") {
-  console.log({ installedIconsArr });
+  console.log("Icons:", installedIconsArr);
   process.exit(0);
 }
 
-if (
-  (args.length === 3 && args[args.length - 1] !== "init") ||
-  args[args.length - 1] !== "list"
-) {
-  logAndExit("Invalid argument..\nhint:spyfui init");
-  process.exit(1);
-}
-const validCmd: string[] = ["a", "add", "rm", "remove"];
+validCmd.push("a", "add", "rm", "remove");
 
 const [, , cmd, icon] = args;
 if (!validCmd.includes(cmd)) {
@@ -66,11 +65,15 @@ if (!validCmd.includes(cmd)) {
   process.exit(1);
 }
 if (cmd === "rm" || cmd === "remove") {
-  logAndExit("invalid command\ntry: 'add' || 'a' to add icon");
+  logAndExit("feature not added\ntry: 'add' || 'a' to add icon");
   process.exit(1);
 }
-
-const provider = icon.split(":")[0];
+let provider: string;
+if (cmd === "list") {
+  provider = icon;
+} else {
+  provider = icon.split(":")[0];
+}
 if (!iconProviders.includes(provider)) {
   logAndExit(
     "invalid provider name\ntry: https://icon-sets.iconify.design/?category=General",
@@ -78,15 +81,8 @@ if (!iconProviders.includes(provider)) {
   process.exit(1);
 }
 
-const iconName: string = icon.split(":")[1];
-const ComponentName = toComponentName(iconName, provider);
-//exit if component already exists
-if (installedIconsArr.includes(ComponentName)) {
-  logAndExit(`${ComponentName} already exists..`);
-  process.exit(0);
-}
-
 const filePath = resolve(CACHE, `${provider}.json`); //localCachePath
+const iconName: string = icon.split(":")[1];
 
 let localIcons: { [key: string]: string } = {};
 try {
@@ -95,6 +91,18 @@ try {
 } catch (err: any) {
   await writeFile(filePath, "{}", "utf8");
   localIcons = {};
+}
+
+if (cmd === "list" && provider) {
+  console.log(Object.keys(localIcons));
+  process.exit(0);
+}
+
+const ComponentName = toComponentName(iconName, provider);
+//exit if component already exists
+if (installedIconsArr.includes(ComponentName)) {
+  logAndExit(`${ComponentName} already exists..`);
+  process.exit(0);
 }
 // check on localCACHE
 addFromCache(spfyiconsPath, ComponentName, localIcons);
