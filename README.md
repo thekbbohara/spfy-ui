@@ -51,9 +51,9 @@ _Example:_
 ## TODOs
 
 - [x] Add `add` Feature: Implemented the functionality to add icons or components.
-- [x] Add `--init` Command: Set up the initial project configuration.
+- [x] Add `init` Command: Set up the initial project configuration.
 - [ ] Add `rm` Feature: Implement functionality to remove icons or components.
 - [ ] Add Listing Commands:
-  - `--list icons <provider>`: List all available icons from a specified provider.
-  - `--listAll <provider>`: List all icons from a specified provider.
+  - [x] `list`: List all installed icons in the current project.
+  - [ ] `list -g`: List all installed icons globally.
 - [ ] Add Component Support: Extend functionality to support UI components
