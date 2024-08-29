@@ -2,7 +2,17 @@ import puppeteer from "puppeteer";
 import { getSvgPathData } from "./spfyUtils.js";
 // Or import puppeteer from 'puppeteer-core';
 
-const scrapeIconify = async (url: string): Promise<string | null> => {
+type pathType = {
+  [key: string]: string;
+  d: string;
+  fill: string;
+};
+type svgReturnType = {
+  path: pathType[];
+  viewBox: string;
+  [key: string]: any;
+};
+const scrapeIconify = async (url: string): Promise<svgReturnType | null> => {
   // const browser = await puppeteer.launch({ headless: false });
   const browser = await puppeteer.launch({ headless: true });
   const page = await browser.newPage();
@@ -11,9 +21,11 @@ const scrapeIconify = async (url: string): Promise<string | null> => {
   await page.setViewport({ width: 1080, height: 1024 });
   const textarea = await page.locator("textarea").waitHandle();
   const svg = await textarea?.evaluate((el) => el.value);
-  const d = getSvgPathData(svg.toString());
+  let d: svgReturnType | null = getSvgPathData(svg.toString());
   await browser.close();
-  return d ? d : null;
+  if (d === null) return null;
+  // d = d.map((dt) => `"${dt}"`);
+  return d;
 };
 
 export default scrapeIconify;

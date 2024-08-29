@@ -3,14 +3,36 @@ import { appendFile, writeFile, readdir, mkdir, readFile } from "fs/promises";
 import { resolve } from "path";
 import writeSetupFiles from "../lib/writeSetupFiles.js";
 import { execSync as exec } from "child_process";
-export const getSvgPathData = (svg: string): string | null => {
+
+type pathType = {
+  [key: string]: string;
+  d: string;
+  fill: string;
+};
+type svgType = {
+  path: pathType | pathType[];
+  viewBox: string;
+  [key: string]: any;
+};
+type svgReturnType = {
+  path: pathType[];
+  viewBox: string;
+  [key: string]: any;
+};
+export const getSvgPathData = (svg: string): svgReturnType | null => {
   const parser = new XMLParser({
     ignoreAttributes: false,
     attributeNamePrefix: "",
   });
-  const jsonObj = parser.parse(svg);
-  const pathElement = jsonObj.svg?.path;
-  return pathElement?.d ?? null;
+  const jsonObj: { svg: svgType } = parser.parse(svg);
+  const { viewBox, path } = jsonObj.svg;
+  if (!Array.isArray(path)) {
+    const data: svgReturnType = { viewBox, path: [path] } ?? null;
+    return data;
+  } else {
+    const data: svgReturnType = { viewBox, path } ?? null;
+    return data;
+  }
 };
 export const getSrcDir = async (cwd: string): Promise<string> => {
   cwd = cwd || process.cwd();
@@ -43,18 +65,18 @@ export const logAndExit = (msg: string): void => {
 export const appendIcon = async (
   spfyiconsdir: string,
   name: string,
-  data: string,
+  data: string[],
 ) => {
   await appendFile(
     spfyiconsdir,
-    `export const ${name}=createIcon("${data}");`,
+    `export const ${name}=createIcon(${JSON.stringify(data)});`,
     "utf8",
   );
 };
 export const addFromCache = async (
   spfyiconsPath: string,
   ComponentName: string,
-  localIcons: { [key: string]: string },
+  localIcons: { [key: string]: string[] },
 ): Promise<void> => {
   console.log("cheaking cache...");
 
@@ -62,7 +84,7 @@ export const addFromCache = async (
     const availableIcons = Object.keys(ComponentName);
     if (availableIcons.includes(ComponentName)) {
       console.log("adding from local cache...");
-      const d = localIcons[ComponentName];
+      const d: string[] = localIcons[ComponentName];
       await appendIcon(spfyiconsPath, ComponentName, d);
       console.log("Icon added:", "<" + ComponentName, "/>");
       process.exit(0);
@@ -71,16 +93,16 @@ export const addFromCache = async (
 };
 
 export const scrapeAndAdd = async (
-  scrapper: (url: string) => Promise<string | null>,
+  scrapper: (url: string) => Promise<string[] | null>,
   provider: string,
   iconName: string,
   spfyiconsPath: string,
   ComponentName: string,
-  localIcons: { [key: string]: string },
+  localIcons: { [key: string]: string[] },
   filePath: string,
 ): Promise<void> => {
   console.log("scraping icon ...");
-  const d: string | null = await scrapper(
+  const d: string[] | null = await scrapper(
     `https://icon-sets.iconify.design/${provider}/${iconName}/`,
   );
   if (!d) {
@@ -158,7 +180,7 @@ export const getInstalledIconName = async (path: string): Promise<string[]> => {
   );
   return installedIconsArr;
 };
-type iconsData = { [key: string]: string };
+type iconsData = { [key: string]: string[] };
 export const getIcons = async (path: string): Promise<iconsData> => {
   let localIcons: iconsData = {};
   try {

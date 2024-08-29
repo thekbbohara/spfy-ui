@@ -86,7 +86,7 @@ if (cmd !== "list" && provider !== "-g") {
 const iconName: string = icon.split(":")[1];
 const filePath = resolve(CACHE, `${provider}.json`);
 console.log(filePath);
-let localIcons: { [key: string]: string } = await getIcons(filePath);
+let localIcons: { [key: string]: string[] } = await getIcons(filePath);
 
 if (cmd === "list") {
   console.log(Object.keys(localIcons));
@@ -104,7 +104,7 @@ addFromCache(spfyiconsPath, ComponentName, localIcons);
 
 const { default: scrapeIconify } = (await import(
   "./utils/scrapeIconify.js"
-)) as { default: (url: string) => Promise<string | null> };
+)) as { default: (url: string) => Promise<string[] | null> };
 
 await scrapeAndAdd(
   scrapeIconify,

@@ -51,7 +51,7 @@ _Example:_
 ## TODOs
 
 - [x] Add `add` Feature: Implemented the functionality to add icons or components.
-- [ ] extend `add` Feature: Support to svg icons with multiple path data.
+- [x] extend `add` Feature: Support to svg icons with multiple path data.
 - [x] Add `init` Command: Set up the initial project configuration.
 - [ ] Add `rm` Feature: Implement functionality to remove icons or components.
 - [x] Add Listing Commands:
