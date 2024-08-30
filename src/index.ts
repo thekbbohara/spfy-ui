@@ -5,7 +5,6 @@ import { fileURLToPath } from "url";
 import { dirname, resolve } from "path";
 import {
   addFromCache,
-  getInstalledIconName,
   getIcons,
   getSrcDir,
   initProject,
@@ -14,6 +13,7 @@ import {
   scrapeAndAdd,
   toComponentName,
 } from "./utils/spfyUtils.js";
+import { readFile } from "fs/promises";
 
 const args: string[] = process.argv;
 // console.log(args);
@@ -45,8 +45,14 @@ if (args.length === 3 && args[args.length - 1] === "init") {
   await initProject(srcdir, spfyiconsPath);
   process.exit(0);
 }
-const installedIconsArr: string[] = await getInstalledIconName(spfyiconsPath);
-
+// const installedIconsArr: string[] = await getInstalledIconName(spfyiconsPath);
+const installedIconsData: string = await readFile(spfyiconsPath, "utf8");
+const installedIcons: string[] = installedIconsData.split("const ");
+installedIcons.shift();
+const installedIconsArr: string[] = installedIcons.reduce(
+  (acc: string[], curr): string[] => (acc = [...acc, curr.split("=")[0]]),
+  [],
+);
 if (args.length === 3 && args[args.length - 1] === "list") {
   console.log("Icons:", installedIconsArr);
   process.exit(0);
@@ -60,10 +66,7 @@ if (!validCmd.includes(cmd)) {
   console.log("try:", validCmd);
   process.exit(1);
 }
-if (cmd === "rm" || cmd === "remove") {
-  logAndExit("feature not added\ntry: 'add' || 'a' to add icon");
-  process.exit(1);
-}
+
 let provider: string;
 if (cmd === "list") {
   provider = icon;
@@ -95,8 +98,13 @@ if (cmd === "list") {
 const ComponentName = toComponentName(iconName, provider);
 //exit if component already exists
 if (installedIconsArr.includes(ComponentName)) {
-  logAndExit(`${ComponentName} already exists..`);
-  process.exit(0);
+  if (cmd === "rm" || cmd === "remove") {
+    console.log(installedIconsData.split(`export const ${ComponentName}`));
+    process.exit(1);
+  } else {
+    logAndExit(`${ComponentName} already exists..`);
+    process.exit(0);
+  }
 }
 // check on localCACHE
 addFromCache(spfyiconsPath, ComponentName, localIcons);

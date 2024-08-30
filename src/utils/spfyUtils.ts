@@ -170,7 +170,7 @@ export const initProject = async (
     process.exit(1);
   }
 };
-export const getInstalledIconName = async (path: string): Promise<string[]> => {
+/* export const getInstalledIconName = async (path: string): Promise<string[]> => {
   const installedIconsData: string = await readFile(path, "utf8");
   const installedIcons: string[] = installedIconsData.split("const ");
   installedIcons.shift();
@@ -179,7 +179,7 @@ export const getInstalledIconName = async (path: string): Promise<string[]> => {
     [],
   );
   return installedIconsArr;
-};
+}; */
 type iconsData = { [key: string]: string[] };
 export const getIcons = async (path: string): Promise<iconsData> => {
   let localIcons: iconsData = {};
