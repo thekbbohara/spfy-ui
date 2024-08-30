@@ -8,7 +8,7 @@
   - Reduced Bloat
   - Unified Interface
 
-[![preview](./ss.png)](./spfyui.mp4)
+[preview](./spfyui.mp4)
 ## How to you the beta version ?
 
 - This project has not been fully completed but if you like to try or contribute, you can follow the following steps:
