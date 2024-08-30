@@ -32,6 +32,10 @@ spfyui init
 
 ---
 
+#### you can download any svg icon from general category : [Icons/general](https://icon-sets.iconify.design/?category=General)
+
+[ ![icons/general](./ss.png) ](https://icon-sets.iconify.design/?category=General)
+
 ### Commands
 
 - Add icon. `add | a`
