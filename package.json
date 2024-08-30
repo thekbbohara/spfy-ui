@@ -1,13 +1,20 @@
 {
   "name": "spfyui",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "",
+  "publishConfig": {
+    "access": "public"
+  },
+  "bin": {
+    "spfyui": "./dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
   "main": "dist/index.js",
-  "module": "dist/index.mjs",
   "type": "module",
-  "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc && esbuild ./dist/index.js --bundle --format=esm --platform=node --minify --outfile=dist/index.mini.js",
+    "build": "npm run clean && tsc",
     "lint": "tsc",
     "start": "bun run src/index.ts",
     "clean": "rm -rf dist"
@@ -24,13 +31,13 @@
   "author": "thekbbohara",
   "license": "MIT",
   "devDependencies": {
+    "@changesets/cli": "^2.27.7",
     "@types/node": "^22.5.0",
     "esbuild": "^0.23.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.5.4"
   },
   "dependencies": {
-    "-": "^0.0.1",
     "fast-xml-parser": "^4.4.1",
     "puppeteer": "^23.1.1"
   }

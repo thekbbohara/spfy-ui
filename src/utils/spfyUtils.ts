@@ -19,6 +19,11 @@ type svgReturnType = {
   viewBox: string;
   [key: string]: any;
 };
+const ensureDirsExist = async (dirs: string[]): Promise<void> => {
+  dirs.forEach(async (dir) => {
+    await mkdir(resolve(dir), { recursive: true });
+  });
+};
 export const getSvgPathData = (svg: string): svgReturnType | null => {
   const parser = new XMLParser({
     ignoreAttributes: false,
@@ -115,11 +120,6 @@ export const scrapeAndAdd = async (
   console.log("Icon added:", "<" + ComponentName, "/>");
   process.exit(0);
 };
-const ensureDirsExist = async (dirs: string[]): Promise<void> => {
-  dirs.forEach(async (dir) => {
-    await mkdir(resolve(dir), { recursive: true });
-  });
-};
 
 const getPackageManager = async (srcDir: string): Promise<string> => {
   try {
@@ -136,10 +136,12 @@ const getPackageManager = async (srcDir: string): Promise<string> => {
 };
 
 export const initProject = async (
+  CACHE: string,
   srcdir: string,
   spfyiconpath: string,
 ): Promise<void> => {
   console.log("initialing spfyui project..");
+  await ensureDirsExist([CACHE]);
   const pkgm: string = await getPackageManager(resolve(srcdir, ".."));
   const commands: { [key: string]: string } = {
     bun: "i",

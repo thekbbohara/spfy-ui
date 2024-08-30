@@ -1,8 +1,8 @@
-import iconProviders from "./lib/iconsProviders.js";
-// import scrapeIconify from "./utils/scrapeIconify.js";
-
+#!/usr/bin/env node
 import { fileURLToPath } from "url";
 import { dirname, resolve } from "path";
+import { readFile, writeFile } from "fs/promises";
+import iconProviders from "./lib/iconsProviders.js";
 import {
   addFromCache,
   getIcons,
@@ -13,10 +13,8 @@ import {
   scrapeAndAdd,
   toComponentName,
 } from "./utils/spfyUtils.js";
-import { readFile, writeFile } from "fs/promises";
 
 const args: string[] = process.argv;
-// console.log(args);
 if (args.length < 2) {
   logAndExit(
     "No arguments passed..\nuse: add provider:iconname\neg:npx spfyui add ri:github-line",
@@ -42,10 +40,9 @@ if (args.length === 3 && !validCmd.includes(args[args.length - 1])) {
   process.exit(1);
 }
 if (args.length === 3 && args[args.length - 1] === "init") {
-  await initProject(srcdir, spfyiconsPath);
+  await initProject(CACHE, srcdir, spfyiconsPath);
   process.exit(0);
 }
-// const installedIconsArr: string[] = await getInstalledIconName(spfyiconsPath);
 const installedIconsData: string = await readFile(spfyiconsPath, "utf8");
 const installedIcons: string[] = installedIconsData.split("const ");
 installedIcons.shift();
