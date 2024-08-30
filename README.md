@@ -12,36 +12,53 @@
 
 ![preview](./spfyui.gif)
 
-## How to you the beta version ?
+## How to use ?
 
-- This project has not been fully completed but if you like to try or contribute, you can follow the following steps:
-  > Note I will be showing you how to do on linux, but it's pretty straight forward.
-  >
-  > -- 1. Clone the repo.
+-- Install spfyui globally.
 
 ```sh
-git clone https://github.com/thekbbohara/spfy-ui.git
+npm i spfyui -g
+
 ```
 
--- 2. Change directory to spfyui.
+-- Go to your react project and initialize spfyui
 
 ```sh
-cd spfyui
+spfyui init
+
 ```
 
--- 3. Compile ts code to js.
+-- Now you are ready to go
+
+---
+
+### Commands
+
+- Add icon. `add | a`
 
 ```sh
-tsc
+spfyui add ri:github-line #<provider>:<iconname>
 ```
 
--- 4. Create an alias to run the compiled code.
+- List icons.
 
 ```sh
-vim ~/.zshrc # your shell configuration file
+spfyui list # icons installed in current project.
 ```
 
-And at the end of the file add alias `alias spfyui='node path/to/spfyui/dist/index.js'`
+```sh
+spfyui list <provider> # icons installed from specefic provider.
+```
+
+```sh
+spfyui list -g #All icons
+```
+
+- Remove icon `rm || remove`
+
+```sh
+spfyui rm ri:github-line
+```
 
 ---
 
