@@ -13,7 +13,7 @@ import {
   scrapeAndAdd,
   toComponentName,
 } from "./utils/spfyUtils.js";
-import { readFile } from "fs/promises";
+import { readFile, writeFile } from "fs/promises";
 
 const args: string[] = process.argv;
 // console.log(args);
@@ -88,7 +88,6 @@ if (cmd !== "list" && provider !== "-g") {
 }
 const iconName: string = icon.split(":")[1];
 const filePath = resolve(CACHE, `${provider}.json`);
-console.log(filePath);
 let localIcons: { [key: string]: string[] } = await getIcons(filePath);
 
 if (cmd === "list") {
@@ -99,17 +98,35 @@ const ComponentName = toComponentName(iconName, provider);
 //exit if component already exists
 if (installedIconsArr.includes(ComponentName)) {
   if (cmd === "rm" || cmd === "remove") {
-    console.log(installedIconsData.split(`export const ${ComponentName}`));
-    process.exit(1);
+    let newInstalledIconsData: string | string[] = installedIconsData.split(
+      `export const ${ComponentName}`,
+    );
+    const nearestI = newInstalledIconsData[1].indexOf(");");
+    newInstalledIconsData =
+      newInstalledIconsData[0] +
+      newInstalledIconsData[1].substring(nearestI + 2);
+    await writeFile(spfyiconsPath, newInstalledIconsData, "utf8");
+    const installedIcons: string[] = newInstalledIconsData.split("const ");
+    let newInstalledIconsArr: string[] = newInstalledIconsData.split("const ");
+    newInstalledIconsArr = installedIcons.reduce(
+      (acc: string[], curr): string[] => (acc = [...acc, curr.split("=")[0]]),
+      [],
+    );
+    newInstalledIconsArr.shift();
+    console.log(newInstalledIconsArr);
+    process.exit(0);
   } else {
     logAndExit(`${ComponentName} already exists..`);
     process.exit(0);
   }
+} else if (cmd === "rm" || cmd === "remove") {
+  console.log("Icon not installed..");
+  process.exit(1);
 }
 // check on localCACHE
-addFromCache(spfyiconsPath, ComponentName, localIcons);
-// scrape
+await addFromCache(spfyiconsPath, ComponentName, localIcons);
 
+// scrape
 const { default: scrapeIconify } = (await import(
   "./utils/scrapeIconify.js"
 )) as { default: (url: string) => Promise<string[] | null> };

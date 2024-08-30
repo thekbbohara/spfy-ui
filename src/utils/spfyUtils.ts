@@ -79,9 +79,8 @@ export const addFromCache = async (
   localIcons: { [key: string]: string[] },
 ): Promise<void> => {
   console.log("cheaking cache...");
-
   if (Object.keys(localIcons).length != 0) {
-    const availableIcons = Object.keys(ComponentName);
+    const availableIcons = Object.keys(localIcons);
     if (availableIcons.includes(ComponentName)) {
       console.log("adding from local cache...");
       const d: string[] = localIcons[ComponentName];
@@ -123,10 +122,8 @@ const ensureDirsExist = async (dirs: string[]): Promise<void> => {
 };
 
 const getPackageManager = async (srcDir: string): Promise<string> => {
-  console.log(srcDir);
   try {
     const files = await readdir(srcDir);
-    console.log(files);
     if (files.includes("bun.lockb")) return "bun";
     if (files.includes("package-lock.json")) return "npm";
     if (files.includes("yarn.lock")) return "yarn";
@@ -150,14 +147,14 @@ export const initProject = async (
     yarn: "add",
     npm: "i",
   };
-  const pkgmCommands = commands[pkgm];
-  if (pkgmCommands) {
-    console.log(`${pkgm} ${pkgmCommands} tailwind-merge -D`);
-    exec(`${pkgm} ${pkgmCommands} tailwind-merge -D`, {
+  const pkgmCommand = commands[pkgm];
+  if (pkgmCommand) {
+    console.log(`${pkgm} ${pkgmCommand} tailwind-merge -D`);
+    exec(`${pkgm} ${pkgmCommand} tailwind-merge -D`, {
       cwd: resolve(srcdir, ".."),
     });
-    console.log(`${pkgm} ${pkgmCommands} clsx -D`);
-    exec(`${pkgm} ${pkgmCommands} clsx -D`, {
+    console.log(`${pkgm} ${pkgmCommand} clsx -D`);
+    exec(`${pkgm} ${pkgmCommand} clsx -D`, {
       cwd: resolve(srcdir, ".."),
     });
     const utilsdir = resolve(srcdir, "utils");
