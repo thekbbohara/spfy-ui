@@ -8,6 +8,7 @@
   - Reduced Bloat
   - Unified Interface
 
+[![preview](./ss.png)](./spfyui.mp4)
 ## How to you the beta version ?
 
 - This project has not been fully completed but if you like to try or contribute, you can follow the following steps:
@@ -58,4 +59,5 @@ _Example:_
   - [x] `list`: List all installed icons in the current project.
   - [x] `list <povider>`: List all installed icons by provider.
   - [x] `list -g`: List all installed icons globally.
+- [ ] Add support to emojies.
 - [ ] Add Component Support: Extend functionality to support UI components
