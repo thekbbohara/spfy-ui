@@ -1,7 +1,15 @@
 {
   "name": "spfyui",
   "version": "0.1.0",
-  "description": "",
+  "description": "cli tool tool to manage react icons and components...",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thekbbohara/spfy-ui.git"
+  },
+  "bugs": {
+    "url": "https://github.com/thekbbohara/spfy-ui/issues"
+  },
+  "homepage": "https://github.com/thekbbohara/spfy-ui#readme",
   "publishConfig": {
     "access": "public"
   },
