@@ -57,7 +57,7 @@ _Example:_
 - [x] Add `add` Feature: Implemented the functionality to add icons or components.
 - [x] extend `add` Feature: Support to svg icons with multiple path data.
 - [x] Add `init` Command: Set up the initial project configuration.
-- [ ] Add `rm` Feature: Implement functionality to remove icons or components.
+- [x] Add `rm` Feature: Implement functionality to remove icons or components.
 - [x] Add Listing Commands:
   - [x] `list`: List all installed icons in the current project.
   - [x] `list <povider>`: List all installed icons by provider.
