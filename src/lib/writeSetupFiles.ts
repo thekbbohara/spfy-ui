@@ -6,7 +6,7 @@ const writeCn = async (utilsdir: string): Promise<void> => {
   await writeFile(
     resolve(utilsdir, "cn.ts"),
     'import { ClassValue, clsx } from "clsx";\nimport { twMerge } from "tailwind-merge";\nconst cn = (...inputs: ClassValue[]) => {\n\treturn twMerge(clsx(inputs));\n};\nexport default cn;',
-    "utf8",
+    "utf8"
   );
 };
 const writeIndex = async (spfyiconpath: string): Promise<void> => {
@@ -14,23 +14,23 @@ const writeIndex = async (spfyiconpath: string): Promise<void> => {
   await writeFile(
     spfyiconpath,
     'import { createIcon } from "@/utils/createIcon";',
-    "utf8",
+    "utf8"
   );
 };
 const writeCreateIcon = async (utilsdir: string): Promise<void> => {
   console.log("Writing", utilsdir, "cn.ts");
   await writeFile(
     resolve(utilsdir, "createIcon.ts"),
-    `interface IconProps {
+    `import React from "react";
+import cn from "./cn";
+interface IconProps {
   size?: number;
   className?: string;
 }
-import React from "react";
-import cn from "./cn";
 type pathType = {
-  [key: string]: string;
+  [key: string]: string | undefined;
   d: string;
-  fill: string;
+  fill?: string;
 };
 type svgReturnType = {
   path: pathType[];
@@ -38,7 +38,11 @@ type svgReturnType = {
   [key: string]: any;
 };
 export const createIcon = (svgData: svgReturnType): React.FC<IconProps> => {
-  return ({ size = 24, className, ...restProps }: IconProps) =>
+  const IconComponent: React.FC<IconProps> = ({
+    size = 24,
+    className,
+    ...restProps
+  }: IconProps) =>
     React.createElement(
       "svg",
       {
@@ -46,20 +50,25 @@ export const createIcon = (svgData: svgReturnType): React.FC<IconProps> => {
         xmlns: "http://www.w3.org/2000/svg",
         width: size,
         height: size,
-        className: cn("w-6 h-6 flex justify-center items-center", className),
+        className: cn(
+          "w-6 h-6 text-s1 flex justify-center items-center",
+          className,
+        ),
         ...restProps,
       },
       svgData.path.map((p, i) =>
-        React.createElement("path", { d: p.d, key: i, fill: p.fill }),
+        React.createElement("path", { d: p?.d, key: i, fill: p?.fill }),
       ),
     );
-};`,
+  IconComponent.displayName = "IconComponent";
+  return IconComponent;
+};`
   );
 };
 
 const writeSetupFiles = async (
   utilsdir: string,
-  spfyiconspath: string,
+  spfyiconspath: string
 ): Promise<void> => {
   await writeCn(utilsdir);
   await writeCreateIcon(utilsdir);

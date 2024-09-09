@@ -13,8 +13,8 @@ type svgReturnType = {
   [key: string]: any;
 };
 const scrapeIconify = async (url: string): Promise<svgReturnType | null> => {
-  // const browser = await puppeteer.launch({ headless: false });
-  const browser = await puppeteer.launch({ headless: true });
+  const browser = await puppeteer.launch({ headless: false });
+  // const browser = await puppeteer.launch({ headless: true });
   const page = await browser.newPage();
   // await page.goto("https://icon-sets.iconify.design/material-symbols/10mp/");
   await page.goto(url);

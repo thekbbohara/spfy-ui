@@ -1,4 +1,6 @@
 const iconProviders: string[] = [
+  "skill-icons",
+  "devicon",
   "material-symbols",
   "material-symbols-light",
   "ic",
@@ -83,5 +85,6 @@ const iconProviders: string[] = [
   "nimbus",
   "oui",
   "formkit",
+  "simple-icons",
 ];
 export default iconProviders;
